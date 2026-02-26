@@ -2,57 +2,628 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Noah Dudziak – AI Agent Experiments</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Noah Dudziak – AI Agent Experiments</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    body { font-family: Arial, sans-serif; max-width: 760px; margin: 40px auto; line-height: 1.6; padding: 0 20px; }
-    h1, h2 { color: #111; }
-    .box { background:#f5f5f5; padding:20px; border-radius:10px; margin:20px 0; }
+    :root {
+      --bg: #0e1117;
+      --surface: #161b22;
+      --surface-hover: #1c2129;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --accent: #58a6ff;
+      --accent-dim: rgba(88, 166, 255, 0.15);
+      --green: #3fb950;
+      --green-dim: rgba(63, 185, 80, 0.15);
+      --orange: #d29922;
+      --orange-dim: rgba(210, 153, 34, 0.15);
+      --radius: 8px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 740px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Header */
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 20px 0;
+    }
+
+    header .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .logo {
+      font-family: 'Space Mono', monospace;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: -0.5px;
+    }
+
+    .logo span { color: var(--accent); }
+
+    nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      margin-left: 24px;
+      transition: color 0.2s;
+    }
+
+    nav a:hover { color: var(--text); }
+
+    /* Hero */
+    .hero {
+      padding: 80px 0 60px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .badge {
+      display: inline-block;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--green);
+      background: var(--green-dim);
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 16px;
+      letter-spacing: -1px;
+    }
+
+    .hero p {
+      font-size: 1.125rem;
+      color: var(--text-muted);
+      max-width: 600px;
+    }
+
+    /* Sections */
+    section {
+      padding: 60px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    section:last-of-type {
+      border-bottom: none;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+      letter-spacing: -0.5px;
+    }
+
+    h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    p { margin-bottom: 16px; }
+    p:last-child { margin-bottom: 0; }
+
+    /* Cards */
+    .card-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 560px) {
+      .card-grid { grid-template-columns: 1fr; }
+      h1 { font-size: 1.8rem; }
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+    }
+
+    .card h3 {
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+    }
+
+    .card p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    .icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      margin-bottom: 14px;
+    }
+
+    .icon-blue { background: var(--accent-dim); }
+    .icon-green { background: var(--green-dim); }
+    .icon-orange { background: var(--orange-dim); }
+
+    /* SMS opt-in box */
+    .opt-in-box {
+      background: var(--surface);
+      border: 2px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 32px;
+      margin: 24px 0;
+    }
+
+    .opt-in-box h3 {
+      color: var(--accent);
+      font-family: 'Space Mono', monospace;
+      font-size: 1rem;
+      margin-bottom: 16px;
+    }
+
+    .keyword-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      text-align: center;
+      margin: 16px 0;
+      font-family: 'Space Mono', monospace;
+      font-size: 1rem;
+    }
+
+    .keyword-box strong {
+      color: var(--accent);
+    }
+
+    .opt-in-box .fine-print {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* Example messages */
+    .message-examples {
+      margin-top: 20px;
+    }
+
+    .msg-bubble {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px 12px 12px 4px;
+      padding: 14px 18px;
+      margin-bottom: 12px;
+      font-size: 0.9rem;
+      max-width: 85%;
+      color: var(--text-muted);
+    }
+
+    .msg-bubble em {
+      color: var(--text);
+      font-style: normal;
+    }
+
+    /* Contact info */
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .contact-item a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .contact-item a:hover {
+      text-decoration: underline;
+    }
+
+    .contact-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      min-width: 60px;
+    }
+
+    /* FAQ */
+    .faq-item {
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .faq-item:last-child { border-bottom: none; }
+
+    .faq-item h3 {
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+    }
+
+    .faq-item p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    /* Legal sections */
+    .legal-section {
+      padding: 60px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .legal-section h2 {
+      margin-bottom: 8px;
+    }
+
+    .legal-updated {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      font-family: 'Space Mono', monospace;
+    }
+
+    .legal-section p,
+    .legal-section li {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .legal-section ul {
+      list-style: none;
+      padding: 0;
+      margin: 12px 0 20px;
+    }
+
+    .legal-section li {
+      padding: 4px 0 4px 20px;
+      position: relative;
+    }
+
+    .legal-section li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--border);
+    }
+
+    .legal-section h3 {
+      margin-top: 28px;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 0;
+      text-align: center;
+    }
+
+    footer p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    footer a {
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      color: var(--text);
+    }
+
+    .footer-links {
+      margin-bottom: 12px;
+    }
+
+    .footer-links a {
+      margin: 0 12px;
+      font-size: 0.8rem;
+    }
+
+    /* Smooth scroll */
+    html { scroll-behavior: smooth; }
+
+    /* Divider */
+    .divider {
+      width: 40px;
+      height: 2px;
+      background: var(--border);
+      margin: 20px 0;
+    }
   </style>
 </head>
 <body>
 
-<h1>AI Agent Development – Personal Project</h1>
+<!-- Header -->
+<header>
+  <div class="container">
+    <a href="#" class="logo">noah<span>.</span>dudziak</a>
+    <nav>
+      <a href="#about">About</a>
+      <a href="#messaging">Messaging</a>
+      <a href="#sms-opt-in">SMS Opt-In</a>
+      <a href="#faq">FAQ</a>
+      <a href="#contact">Contact</a>
+      <a href="#privacy">Privacy</a>
+      <a href="#terms">Terms</a>
+    </nav>
+  </div>
+</header>
 
-<p>
-This site describes a personal AI agent development project by Noah Dudziak.
-The project focuses on building and testing autonomous agents that can interact with users via SMS and other communication channels.
-</p>
-
-<h2>How Messaging Works</h2>
-<div class="box">
-<p>
-SMS messages are only sent to users who explicitly request access and provide their phone number.
-These messages are conversational responses, alerts, or results requested by the user.
-</p>
-
-<p>
-No cold outreach. No marketing campaigns.
-</p>
-
-<p>
-Users can opt out at any time by replying STOP.
-</p>
+<!-- Hero -->
+<div class="hero">
+  <div class="container">
+    <div class="badge">&#9679; Personal Research Project</div>
+    <h1>AI Agent Experiments</h1>
+    <p>A personal project by Noah Dudziak exploring AI automation, conversational agents, and messaging workflows. Built for hands-on learning and small-scale testing.</p>
+  </div>
 </div>
 
-<h2>SMS Terms</h2>
-<ul>
-<li>"To use this bot, text 'START' to [Number]. By texting in, you agree to receive messages. Message and data rates may apply. Reply STOP to opt out."</li>
-</ul>
-  
-<h2>Example Messages</h2>
-<ul>
-<li>"Hi there! This is Agent Griff, your personal AI assistant. I'm ready to help with your questions. Standard message and data rates may apply. Reply STOP to unsubscribe at any time."</li>
-<li>"Task completed. Want a summary?"</li>
-</ul>
+<!-- About -->
+<section id="about">
+  <div class="container">
+    <h2>About This Project</h2>
+    <p>This is a hobby and research project created by Noah Dudziak to experiment with AI-powered autonomous agents. The system — internally called "Agent Griff" — provides conversational AI assistance, task management support, and automated notifications through multiple communication channels including SMS and messaging apps.</p>
+    <p>The project is designed for personal use and a small group of authorized testers who have explicitly opted in. It is not a commercial product, and there are no marketing campaigns, advertising, or cold outreach of any kind.</p>
 
-<h2>Project Purpose</h2>
-<p>
-This is a hobby and research project used to experiment with AI automation, messaging workflows, and agent-based systems.
-</p>
+    <div class="card-grid">
+      <div class="card">
+        <div class="icon icon-blue">💬</div>
+        <h3>Conversational AI</h3>
+        <p>Natural-language assistant that responds to questions, provides information, and helps with everyday tasks.</p>
+      </div>
+      <div class="card">
+        <div class="icon icon-green">📋</div>
+        <h3>Task Management</h3>
+        <p>Reminders, alerts, and follow-ups delivered via SMS or messaging — only when requested by the user.</p>
+      </div>
+      <div class="card">
+        <div class="icon icon-orange">🔬</div>
+        <h3>Research & Learning</h3>
+        <p>Built to explore AI automation techniques, agent-based architectures, and real-world messaging integrations.</p>
+      </div>
+      <div class="card">
+        <div class="icon icon-blue">🔒</div>
+        <h3>Privacy-First</h3>
+        <p>No data is sold or shared. Phone numbers are used solely for delivering requested messages to opted-in users.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-<h2>Contact</h2>
-<p>Email: noah.s.dudziak@gmail.com</p>
+<!-- How Messaging Works -->
+<section id="messaging">
+  <div class="container">
+    <h2>How Messaging Works</h2>
+    <p>SMS messages are only sent to users who explicitly opt in by texting a keyword to the project's toll-free number. Messages are conversational responses, task alerts, or results that the user has requested. There is no cold outreach, no marketing, and no promotional campaigns.</p>
+    <p>All messaging through this project is for <strong>customer care and support</strong> — providing conversational AI assistance and task management to the developer (Noah) and a small group of authorized testers.</p>
+
+    <div class="divider"></div>
+
+    <h3>Example Messages</h3>
+    <div class="message-examples">
+      <div class="msg-bubble">
+        <em>Hi there! This is Agent Griff, your personal AI assistant.</em> I'm ready to help with your questions. Standard message and data rates may apply. Reply STOP to unsubscribe at any time.
+      </div>
+      <div class="msg-bubble">
+        <em>Task completed.</em> Want a summary?
+      </div>
+      <div class="msg-bubble">
+        <em>Reminder:</em> You asked me to follow up on this at 3 PM. Let me know if you need anything else.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SMS Opt-In -->
+<section id="sms-opt-in">
+  <div class="container">
+    <h2>SMS Opt-In</h2>
+    <p>To receive messages from Agent Griff, you must explicitly opt in by texting the keyword below. Only authorized testers who have been invited to participate in this project should opt in.</p>
+
+    <div class="opt-in-box">
+      <h3>Join Agent Griff SMS</h3>
+      <p style="font-size: 0.95rem;">Would you like to receive conversational AI assistance and task management support from Agent Griff? Opt in by texting the keyword below.</p>
+
+      <div class="keyword-box">
+        Text <strong>START</strong> to <strong>+1 (833) XXX-XXXX</strong>
+      </div>
+
+      <p class="fine-print">
+        By texting START, you consent to receive conversational AI and task management text messages from Noah Dudziak's AI Agent Experiments project at the phone number used to opt in. This is a personal research project — messages are for customer care and support purposes only. Consent is not a condition of any service. Message frequency varies. Message and data rates may apply. Reply <strong>HELP</strong> for help and <strong>STOP</strong> to cancel at any time. View our <a href="#terms" style="color: var(--accent);">Terms of Service</a> and <a href="#privacy" style="color: var(--accent);">Privacy Policy</a>.
+      </p>
+    </div>
+
+    <p style="font-size: 0.9rem; color: var(--text-muted);">Authorized testers learn about this opt-in keyword through direct invitation from Noah Dudziak (the project developer) via personal communication such as in-person conversation, direct message, or email. This project does not use public advertising, social media ads, or any other mass-distribution method to solicit opt-ins.</p>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="container">
+    <h2>Frequently Asked Questions</h2>
+
+    <div class="faq-item">
+      <h3>Who is this for?</h3>
+      <p>This project is for Noah Dudziak (the developer) and a small group of friends and colleagues who have been personally invited to test the AI assistant. It is not open to the general public.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>What kind of messages will I receive?</h3>
+      <p>You'll receive conversational AI responses to your questions, task reminders, alerts, and other support messages you've requested. No marketing, promotional content, or unsolicited messages.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>How do I stop receiving messages?</h3>
+      <p>Reply <strong>STOP</strong> to any message at any time. You will be immediately unsubscribed and will receive no further messages unless you opt in again.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Is my phone number shared with anyone?</h3>
+      <p>No. Your phone number is never sold, shared, or disclosed to any third party. It is used solely to deliver the messages you've requested from this project.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Is this a business?</h3>
+      <p>No. This is a personal hobby and research project for exploring AI automation and messaging systems. It is not a commercial venture.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>How do I get help?</h3>
+      <p>Reply <strong>HELP</strong> to any SMS message, or contact Noah directly at <a href="mailto:noah.s.dudziak@gmail.com" style="color: var(--accent);">noah.s.dudziak@gmail.com</a>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Contact -->
+<section id="contact">
+  <div class="container">
+    <h2>Contact</h2>
+    <p>If you have questions about this project, need support, or want to report an issue, you can reach Noah Dudziak directly.</p>
+
+    <div class="contact-item">
+      <span class="contact-label">Name</span>
+      Noah Dudziak
+    </div>
+    <div class="contact-item">
+      <span class="contact-label">Email</span>
+      <a href="mailto:noah.s.dudziak@gmail.com">noah.s.dudziak@gmail.com</a>
+    </div>
+    <div class="contact-item">
+      <span class="contact-label">Project</span>
+      AI Agent Experiments (Agent Griff)
+    </div>
+    <div class="contact-item">
+      <span class="contact-label">GitHub</span>
+      <a href="https://github.com/dudzians" target="_blank" rel="noopener">github.com/dudzians</a>
+    </div>
+  </div>
+</section>
+
+<!-- Privacy Policy -->
+<div class="legal-section" id="privacy">
+  <div class="container">
+    <h2>Privacy Policy</h2>
+    <p class="legal-updated">Last updated: February 25, 2026</p>
+
+    <p>This Privacy Policy describes how Noah Dudziak ("I", "me") collects, uses, and protects information in connection with the AI Agent Experiments project ("the Project"), including SMS messaging through the Project's toll-free number.</p>
+
+    <h3>Information I Collect</h3>
+    <p>When you opt in to receive SMS messages by texting the keyword START to the Project's toll-free number, I collect:</p>
+    <ul>
+      <li>Your phone number (provided when you send the opt-in keyword)</li>
+      <li>Message content you send to the agent</li>
+      <li>Your opt-in and opt-out status</li>
+    </ul>
+
+    <h3>How I Use Your Information</h3>
+    <p>Your information is used solely for the following purposes:</p>
+    <ul>
+      <li>Delivering the conversational AI responses and task management messages you request</li>
+      <li>Processing your opt-in and opt-out requests</li>
+      <li>Improving the AI agent as part of this personal research project</li>
+    </ul>
+
+    <h3>Information Sharing</h3>
+    <p>I do not sell, rent, trade, or share your phone number or personal information with any third parties for marketing or any other purpose. Your phone number is used exclusively to send you messages you have requested through this Project.</p>
+    <p>The only third-party service involved in message delivery is Twilio, which acts as the SMS carrier. Twilio processes your phone number solely for the purpose of transmitting messages and is bound by their own privacy policy.</p>
+
+    <h3>Data Storage & Security</h3>
+    <p>Your information is stored securely on systems maintained by me with appropriate technical safeguards including encryption, access controls, and network isolation. I retain your phone number and opt-in status only for as long as you remain opted in. Upon opting out, your information is removed.</p>
+
+    <h3>Your Rights</h3>
+    <p>You may opt out of SMS messages at any time by replying STOP. You may request deletion of your data by contacting me at <a href="mailto:noah.s.dudziak@gmail.com" style="color: var(--accent);">noah.s.dudziak@gmail.com</a>.</p>
+
+    <h3>Changes to This Policy</h3>
+    <p>I may update this Privacy Policy from time to time. Changes will be posted on this page with an updated date.</p>
+
+    <h3>Contact</h3>
+    <p>For questions about this Privacy Policy, contact: <a href="mailto:noah.s.dudziak@gmail.com" style="color: var(--accent);">noah.s.dudziak@gmail.com</a></p>
+  </div>
+</div>
+
+<!-- Terms of Service -->
+<div class="legal-section" id="terms">
+  <div class="container">
+    <h2>Terms of Service</h2>
+    <p class="legal-updated">Last updated: February 25, 2026</p>
+
+    <p>These Terms of Service ("Terms") govern your use of the AI Agent Experiments project ("the Project") operated by Noah Dudziak ("I", "me"), including any SMS messages received through the Project's toll-free number.</p>
+
+    <h3>About the Project</h3>
+    <p>The Project is a personal hobby and research project for exploring AI automation and messaging systems. It is not a commercial product or service. Participation is by invitation only.</p>
+
+    <h3>SMS Messaging</h3>
+    <p>By texting START to the Project's toll-free number, you consent to receive conversational AI and task management text messages. Key terms:</p>
+    <ul>
+      <li>Messages are for customer care and support purposes (conversational AI responses and task management)</li>
+      <li>Message frequency varies based on your interactions</li>
+      <li>Message and data rates from your carrier may apply</li>
+      <li>Consent to receive messages is not a condition of any service</li>
+      <li>Reply STOP at any time to opt out; reply HELP for assistance</li>
+    </ul>
+
+    <h3>Acceptable Use</h3>
+    <p>You agree not to use the Project to send abusive, illegal, or harmful content, or to attempt to compromise the security of the system.</p>
+
+    <h3>Disclaimer</h3>
+    <p>The Project is provided "as is" without warranty of any kind. As a personal research project, I do not guarantee availability, accuracy of AI responses, or uninterrupted service. AI-generated responses may contain errors.</p>
+
+    <h3>Limitation of Liability</h3>
+    <p>I am not liable for any damages arising from your use of the Project, including but not limited to any reliance on AI-generated responses.</p>
+
+    <h3>Changes to These Terms</h3>
+    <p>I may update these Terms from time to time. Changes will be posted on this page with an updated date.</p>
+
+    <h3>Contact</h3>
+    <p>For questions about these Terms, contact: <a href="mailto:noah.s.dudziak@gmail.com" style="color: var(--accent);">noah.s.dudziak@gmail.com</a></p>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="footer-links">
+      <a href="#privacy">Privacy Policy</a>
+      <a href="#terms">Terms of Service</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <p>&copy; 2026 Noah Dudziak. AI Agent Experiments — Personal Research Project.</p>
+  </div>
+</footer>
 
 </body>
 </html>
